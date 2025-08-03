@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const bookListContainer = document.getElementById('book-list');
+    const searchForm = document.getElementById('search-form');
+    const searchResultContainer = document.getElementById('search-result');
+    const bookTitleInput = document.getElementById('book-title-input');
+    const authorNameInput = document.getElementById('author-name-input');
 
     const fetchCover = async (title, author) => {
         try {
@@ -27,31 +31,69 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const createBookCard = (title, author, coverUrl) => {
+        const bookCard = document.createElement('div');
+        bookCard.className = 'book-card';
+
+        const img = document.createElement('img');
+        img.src = coverUrl;
+        img.alt = `Cover of ${title}`;
+
+        const titleElement = document.createElement('div');
+        titleElement.className = 'title';
+        titleElement.textContent = title;
+
+        const authorElement = document.createElement('div');
+        authorElement.className = 'author';
+        authorElement.textContent = author;
+
+        bookCard.appendChild(img);
+        bookCard.appendChild(titleElement);
+        bookCard.appendChild(authorElement);
+        return bookCard;
+    };
+
     const displayBooks = async () => {
         for (const book of books) {
             const coverUrl = await fetchCover(book.title, book.author);
-
-            const bookCard = document.createElement('div');
-            bookCard.className = 'book-card';
-
-            const img = document.createElement('img');
-            img.src = coverUrl;
-            img.alt = `Cover of ${book.title}`;
-
-            const titleElement = document.createElement('div');
-            titleElement.className = 'title';
-            titleElement.textContent = book.title;
-
-            const authorElement = document.createElement('div');
-            authorElement.className = 'author';
-            authorElement.textContent = book.author;
-
-            bookCard.appendChild(img);
-            bookCard.appendChild(titleElement);
-            bookCard.appendChild(authorElement);
+            const bookCard = createBookCard(book.title, book.author, coverUrl);
             bookListContainer.appendChild(bookCard);
         }
     };
 
+    const handleSearch = async (event) => {
+        event.preventDefault();
+        const title = bookTitleInput.value;
+        const author = authorNameInput.value;
+        searchResultContainer.innerHTML = ''; // Clear previous results
+        const coverUrl = await fetchCover(title, author);
+        const bookCard = createBookCard(title, author, coverUrl);
+        searchResultContainer.appendChild(bookCard);
+    };
+
+    const handleTabSwitching = () => {
+        const tabs = document.querySelectorAll('.tab-link');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                tabContents.forEach(content => {
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+            });
+        });
+    };
+
     displayBooks();
+    searchForm.addEventListener('submit', handleSearch);
+    handleTabSwitching();
 });

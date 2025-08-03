@@ -7,8 +7,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Book Covers</h1>
-    <div id="book-list" class="book-grid"></div>
+    <h1>Book Cover Finder</h1>
+
+    <div class="tab-container">
+        <div class="tab-header">
+            <button class="tab-link active" data-tab="book-list-tab">Book List</button>
+            <button class="tab-link" data-tab="search-tab">Search</button>
+        </div>
+
+        <div id="book-list-tab" class="tab-content active">
+            <div id="book-list" class="book-grid"></div>
+        </div>
+
+        <div id="search-tab" class="tab-content">
+            <form id="search-form" class="search-form">
+                <input type="text" id="book-title-input" placeholder="Enter book title" required>
+                <input type="text" id="author-name-input" placeholder="Enter author name" required>
+                <button type="submit">Search</button>
+            </form>
+            <div id="search-result" class="book-grid"></div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
